@@ -74,7 +74,7 @@ const App = () => {
       <View style={{ flex: 1, marginTop: 20 }} >
           {
               groupedSpends.map(group => (
-                  <View>
+                  <View key={group.name.toDateString()} >
                       <Text style={{marginLeft: 20}}>{group.name.toDateString()}</Text>
                       <FlatList
                           data={group.items}

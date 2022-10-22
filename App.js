@@ -58,7 +58,6 @@ const groupedSpends = Object.values(SPENDS.reduce((spd, item) => {
 
 const Item = ({ spent }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{spent.date.toDateString()}</Text>
     <Text style={styles.title}>{spent.amount} zl.</Text>
     <Text style={styles.title}>{spent.description}</Text>
   </View>
@@ -71,12 +70,21 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Your spends:</Text>
-      <FlatList
-        data={SPENDS}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+      <Text style={{marginTop:20, marginLeft: 20}}>Your spends:</Text>
+      <View style={{ flex: 1, marginTop: 20 }} >
+          {
+              groupedSpends.map(group => (
+                  <View>
+                      <Text style={{marginLeft: 20}}>{group.name.toDateString()}</Text>
+                      <FlatList
+                          data={group.items}
+                          renderItem={renderItem}
+                          keyExtractor={item => item.id}
+                      />
+                  </View>
+              ))
+          }
+      </View>
     </SafeAreaView>
   );
 }

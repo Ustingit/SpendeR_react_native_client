@@ -56,15 +56,17 @@ const groupedSpends = Object.values(SPENDS.reduce((spd, item) => {
   return spd;
 }, {}));
 
-const Item = ({ title }) => (
+const Item = ({ spent }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
+    <Text style={styles.title}>{spent.date.toDateString()}</Text>
+    <Text style={styles.title}>{spent.amount} zl.</Text>
+    <Text style={styles.title}>{spent.description}</Text>
   </View>
 );
 
 const App = () => {
   const renderItem = ({ item }) => (
-    <Item title={item.description} />
+    <Item spent={item} />
   );
 
   return (

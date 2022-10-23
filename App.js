@@ -1,5 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar } from 'react-native';
+import SpendGridCell from './components/spends/SpendGridCell'
+import { groupDataByDate } from './helpers/data/dataModifiers'
 
 var today = new Date();
 var oldDate = new Date(new Date().setDate(today.getDate()-5));
@@ -47,25 +49,11 @@ const SPENDS = [
   },
 ];
 
-const groupedSpends = Object.values(SPENDS.reduce((spd, item) => {
-  if (!spd[item.date]) spd[item.date] = {
-      name: item.date,
-      items: []
-  };
-  spd[item.date].items.push(item);
-  return spd;
-}, {}));
-
-const Item = ({ spent }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{spent.amount} zl.</Text>
-    <Text style={styles.title}>{spent.description}</Text>
-  </View>
-);
+const groupedSpends = groupDataByDate(SPENDS);
 
 const App = () => {
   const renderItem = ({ item }) => (
-    <Item spent={item} />
+    <SpendGridCell spent={item} />
   );
 
   return (

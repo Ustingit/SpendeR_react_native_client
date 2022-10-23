@@ -1,5 +1,6 @@
-import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar } from 'react-native';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert } from 'react-native';
 import SpendGridCell from './components/spends/SpendGridCell'
 import { groupDataByDate } from './helpers/data/dataModifiers'
 
@@ -9,41 +10,41 @@ var oldDate = new Date(new Date().setDate(today.getDate()-5));
 const SPENDS = [
   { 
     id: 1,
-    description: "groceries",
+    comment: "groceries",
     amount: 15.567,
-    user: 1,
-    type: 0,
-    sudType: 1,
+    userId: 1,
+    typeId: 0,
+    subType: 1,
     direction: 0,
     date: today
   },
   { 
     id: 2,
-    description: "transport",
+    comment: "transport",
     amount: 3.40,
-    user: 1,
-    type: 2,
-    sudType: 5,
+    userId: 1,
+    typeId: 2,
+    subType: 5,
     direction: 0,
     date: today
   },
   { 
     id: 3,
-    description: "bouth glasses",
+    comment: "bouth glasses",
     amount: 967.45,
-    user: 1,
-    type: 3,
-    sudType: 7,
+    userId: 1,
+    typeId: 3,
+    subType: 7,
     direction: 0,
     date: oldDate
   },
   { 
     id: 4,
-    description: "salary",
+    comment: "salary",
     amount: 3400,
-    user: 1,
-    type: 12,
-    sudType: 15,
+    userId: 1,
+    typeId: 12,
+    subType: 15,
     direction: 1,
     date: oldDate
   },
@@ -52,6 +53,22 @@ const SPENDS = [
 const groupedSpends = groupDataByDate(SPENDS);
 
 const App = () => {
+  const [spends, setSpends] = useState([]);
+
+  useEffect(() => {
+    axios.get('https://63552286483f5d2df3adc834.mockapi.io/get/spends')
+    .then(({ data }) => {
+      console.log('raw fetched:', data);
+      const groupedData = groupDataByDate(data);
+      console.log('grouped fetched:', groupedData);
+      setSpends(groupedData);
+    }).catch((err) => {
+      console.log('error:', err);
+      console.log('error:', err.response);
+      Alert.alert('Error','Error during fetching spends form server.');
+    });
+  }, []);
+
   const renderItem = ({ item }) => (
     <SpendGridCell spent={item} />
   );
@@ -61,9 +78,9 @@ const App = () => {
       <Text style={{marginTop:20, marginLeft: 20}}>Your spends:</Text>
       <View style={{ flex: 1, marginTop: 20 }} >
           {
-              groupedSpends.map(group => (
-                  <View key={group.name.toDateString()} >
-                      <Text style={{marginLeft: 20}}>{group.name.toDateString()}</Text>
+              spends.map(group => (
+                  <View key={group.name} >
+                      <Text style={{marginLeft: 20}}>{new Date(group.name).toDateString()}</Text>
                       <FlatList
                           data={group.items}
                           renderItem={renderItem}

@@ -20,7 +20,7 @@ const SpendGridCell = ({ spent }) => {
   return (
     <View style={styles.item}>
       <Text style={styles.title}>{spent.amount} zl.</Text>
-      <Text style={styles.title}>{spent.description}</Text>
+      <Text style={styles.title}>{spent.comment}</Text>
     </View>
   );
 }

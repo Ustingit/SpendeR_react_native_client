@@ -6,15 +6,14 @@ import { groupDataByDate } from './helpers/data/dataModifiers'
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [spends, setSpends] = useState([]);
+  const [spends, setSpends] = useState();
 
   useEffect(() => {
     setIsLoading(true);
     axios.get('https://63552286483f5d2df3adc834.mockapi.io/get/spends')
     .then(({ data }) => {
-      //console.log('raw fetched:', data);
       const groupedData = groupDataByDate(data);
-      //console.log('grouped fetched:', groupedData);
+      console.log('grouped fetched:', groupedData);
       setSpends(groupedData);
     }).catch((err) => {
       console.log('error:', err);
@@ -28,6 +27,19 @@ const App = () => {
     <SpendGridCell spent={item} />
   );
 
+  const renderGroup = ({ item }) => {
+    return (
+      <View key={item.name} >
+                        <Text style={{marginLeft: 20}}>{new Date(item.name).toDateString()}</Text>
+                        <FlatList
+                            data={item.items}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => index}
+                        />
+                    </View>
+    );
+  };
+
   if (isLoading) {
     return <View style={{
       flex: 1, //takes all the width
@@ -39,23 +51,14 @@ const App = () => {
     </View>
   }
 
+  if (spends.length === 0) {
+    return <View><Text>There no spends. Feel free to add first..</Text></View>;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{marginTop:20, marginLeft: 20}}>Your spends:</Text>
-      <View style={{ flex: 1, marginTop: 20 }} >
-          {
-              spends.map(group => (
-                  <View key={group.name} >
-                      <Text style={{marginLeft: 20}}>{new Date(group.name).toDateString()}</Text>
-                      <FlatList
-                          data={group.items}
-                          renderItem={renderItem}
-                          keyExtractor={item => item.id}
-                      />
-                  </View>
-              ))
-          }
-      </View>
+      <FlatList data={spends} renderItem={renderGroup} keyExtractor={(group, index) => index} />
       <StatusBar theme="auto" />
     </SafeAreaView>
   );

@@ -4,8 +4,9 @@ import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpaci
 import SpendGridCell from '../components/spends/SpendGridCell'
 import { groupDataByDate } from '../helpers/data/dataModifiers'
 import Loader from '../components/common/Loader'
+import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [spends, setSpends] = useState();
 
@@ -27,7 +28,7 @@ const HomeScreen = () => {
   useEffect(fetchSpends, []);
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => alert('TOUCHED')} >
+    <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { item: item })} >
         <SpendGridCell spent={item} />
     </TouchableOpacity>
   );
@@ -79,3 +80,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+export const NAVIGATION_KEY = "Home";

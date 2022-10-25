@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, Text, View } from 'react-native';
 //import styled from 'styled-components/native';
 
-export default SpendDetailsScreen = () => {
+export default SpendDetailsScreen = ({ route, navigation }) => {
+    const { item } = route.params;
+    
+    useEffect(() => {
+        navigation.setOptions({
+            title: 'Spend details:'
+        });
+    }, []);
+
     return (
         <View>
             <Image source={{ uri: 'http://art.mau.ru/foto/dream/001.jpg' }} />
-            <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi ut, eius vero impedit pariatur sed? Minima, illum blanditiis delectus tempore laudantium illo eius, ratione, maxime facere excepturi odio doloribus amet!</Text>
+            <Text>{item.id}</Text>
+            <Text>{item.amount} zl</Text>
+            <Text>{new Date(item.date).toLocaleDateString()}</Text>
+            <Text>{item.comment}</Text>
+            <Text>{item.typeName} / {item.subTypeName}</Text>
         </View>
     );
 };
+
+export const NAVIGATION_KEY = "SpendDetails";
+
 /*
 const SpendImage = styled.Image`
     border-radius: 10px;

@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeScreen from '../../screens/Home';
-import SpendDetailsScreen from '../../screens/SpendDetails';
+import HomeScreen, { NAVIGATION_KEY as homeKey } from '../../screens/Home';
+import SpendDetailsScreen, { NAVIGATION_KEY as detailsKey } from '../../screens/SpendDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,8 +10,8 @@ const Stack = createNativeStackNavigator();
 export const Navigation = () => {
     return <NavigationContainer>
         <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="SpendDetails" component={SpendDetailsScreen} />
+        <Stack.Screen name={homeKey} component={HomeScreen} />
+        <Stack.Screen name={detailsKey} component={SpendDetailsScreen} />
     </Stack.Navigator>
     </NavigationContainer>;
 }

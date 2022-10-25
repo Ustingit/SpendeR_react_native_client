@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import SpendGridCell from './components/spends/SpendGridCell'
 import { groupDataByDate } from './helpers/data/dataModifiers'
 
@@ -8,12 +8,12 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [spends, setSpends] = useState();
 
-  useEffect(() => {
+  const fetchSpends = () => {
     setIsLoading(true);
     axios.get('https://63552286483f5d2df3adc834.mockapi.io/get/spends')
     .then(({ data }) => {
       const groupedData = groupDataByDate(data);
-      console.log('grouped fetched:', groupedData);
+      //console.log('grouped fetched:', groupedData);
       setSpends(groupedData);
     }).catch((err) => {
       console.log('error:', err);
@@ -21,7 +21,9 @@ const App = () => {
     }).finally(() => {
       setIsLoading(false);
     });
-  }, []);
+  }
+
+  useEffect(fetchSpends, []);
 
   const renderItem = ({ item }) => (
     <SpendGridCell spent={item} />
@@ -58,7 +60,10 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{marginTop:20, marginLeft: 20}}>Your spends:</Text>
-      <FlatList data={spends} renderItem={renderGroup} keyExtractor={(group, index) => index} />
+      <FlatList data={spends} 
+                renderItem={renderGroup} 
+                keyExtractor={(group, index) => index} 
+                refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchSpends} />} />
       <StatusBar theme="auto" />
     </SafeAreaView>
   );

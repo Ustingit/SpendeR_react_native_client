@@ -1,8 +1,9 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Alert, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity } from 'react-native';
 import SpendGridCell from '../components/spends/SpendGridCell'
 import { groupDataByDate } from '../helpers/data/dataModifiers'
+import Loader from '../components/common/Loader'
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,20 +45,8 @@ const HomeScreen = () => {
     );
   };
 
-  if (isLoading) {
-    return <View style={{
-      flex: 1, //takes all the width
-      justifyContent: 'center',
-      alignContent: 'center'
-    }}>
-      <ActivityIndicator size="large" />
-      <Text style={{ marginTop: 15 }} >Data loading..</Text>
-    </View>
-  }
-
-  if (spends.length === 0) {
-    return <View><Text>There no spends. Feel free to add first..</Text></View>;
-  }
+  if (isLoading) { return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Loader /></View> }
+  if (spends.length === 0) {  return <View><Text>There no spends. Feel free to add first..</Text></View>; }
 
   return (
     <View>

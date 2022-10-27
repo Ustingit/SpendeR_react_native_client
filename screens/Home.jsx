@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity, ImageBackground } from 'react-native';
 import SpendGridCell from '../components/spends/SpendGridCell'
 import { groupDataByDate } from '../helpers/data/dataModifiers'
 import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
+
+const backgroundImage = require('../images/baffett.jpg');
 
 const HomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -50,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
   if (spends.length === 0) {  return <View><Text>There no spends. Feel free to add first..</Text></View>; }
 
   return (
+    <ImageBackground source={backgroundImage} style={styles.image} >
     <View>
       <Text style={{marginTop:20, marginLeft: 20}}>Your spends:</Text>
       <FlatList data={spends} 
@@ -57,6 +60,7 @@ const HomeScreen = ({ navigation }) => {
                 keyExtractor={(group, index) => index} 
                 refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchSpends} />} />
     </View>
+    </ImageBackground>
   );
 }
 
@@ -77,6 +81,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+    resizeMode: 'cover',
+    height: '100%',
+    width: '100%'
+  }
 });
 
 export default HomeScreen;

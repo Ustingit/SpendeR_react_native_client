@@ -19,7 +19,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#00000',
         padding: 16,
-        opacity: 0.6
+        opacity: 0.7
     },
     lightText: {
         color: '#fff'
@@ -42,5 +42,11 @@ export default StyleSheet.create({
     pressedInlineTextButton: {
         opacity: 0.6,
         color: '#87F1FF'
+    },
+    topMargin: {
+        marginTop: 16
+    },
+    bottomMargin: {
+        marginBottom: 16
     }
 });

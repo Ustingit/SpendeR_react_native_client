@@ -4,6 +4,7 @@ import HomeScreen, { NAVIGATION_KEY as homeKey } from '../../screens/Home';
 import SpendDetailsScreen, { NAVIGATION_KEY as detailsKey } from '../../screens/SpendDetails';
 import LoginScreen, { NAVIGATION_KEY as loginKey } from '../LoginScreen';
 import SignUpScreen, { NAVIGATION_KEY as signUpKey } from '../SignUpScreen';
+import ResetPasswordScreen, { NAVIGATION_KEY as resetPasswordKey } from '../ResetPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,7 @@ export const Navigation = () => {
         <Stack.Navigator>
         <Stack.Screen name={loginKey} component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name={signUpKey} component={SignUpScreen} options={{ headerShown: false }} />
+        <Stack.Screen name={resetPasswordKey} component={ResetPasswordScreen} options={{ headerShown: false }} />
         <Stack.Screen name={homeKey} component={HomeScreen} />
         <Stack.Screen name={detailsKey} component={SpendDetailsScreen} />
     </Stack.Navigator>

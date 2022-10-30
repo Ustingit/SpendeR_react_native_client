@@ -47,7 +47,7 @@ export default function SignUpScreen({ navigation }) {
                        style={[AppStyles.textInput, AppStyles.lightText, AppStyles.lightTextInput]} />
             <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
                 <Text style={AppStyles.lightText} >Already have an account ? </Text>
-                <InlineTextButton text="Login" onPress={() => navigation.pop()} ></InlineTextButton>
+                <InlineTextButton text="Login" onPress={() => navigation.popToTop()} ></InlineTextButton>
             </View>
             <Button title="Sign Up" color="#f7b267" ></Button>
         </KeyboardAvoidingView>

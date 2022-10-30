@@ -5,7 +5,7 @@ import InlineTextButton from '../components/common/Buttons/InlineTextButton';
 
 const backgroundImage = require('../images/background-mountain_dark.jpg');
 
-export default function SignUpScreen() {
+export default function SignUpScreen({ navigation }) {
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState(""); 
     const [confirmPassword, setConfirmPassword] = useState(""); 
@@ -37,7 +37,7 @@ export default function SignUpScreen() {
                        style={[AppStyles.textInput, AppStyles.lightText, AppStyles.lightTextInput]} />
             <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
                 <Text style={AppStyles.lightText} >Already have an account ? </Text>
-                <InlineTextButton text="Login" ></InlineTextButton>
+                <InlineTextButton text="Login" onPress={() => navigation.pop()} ></InlineTextButton>
             </View>
             <Button title="Sign Up" color="#f7b267" ></Button>
         </KeyboardAvoidingView>

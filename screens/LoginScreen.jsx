@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 import AppStyles from '../styles/AppStyles';
 import InlineTextButton from '../components/common/Buttons/InlineTextButton';
+import { NAVIGATION_KEY as signUpPageKey } from './SignUpScreen';
 
 const backgroundImage = require('../images/background-mountain_dark.jpg');
 
-export default function LoginScreen() {
-    const [userName, setUserName] = useState(""); 
+export default function LoginScreen({ navigation }) {
+    const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState(""); 
 
     return (
@@ -15,10 +16,10 @@ export default function LoginScreen() {
                       behavior={Platform.OS === "ios"? "padding" : null}
                       keyboardVerticalOffset={60} >
             <Text style={[AppStyles.lightText, AppStyles.header]} >Login</Text>
-            <TextInput placeholder='Username' 
+            <TextInput placeholder='Email' 
                        placeholderTextColor='#BEBEBE'
-                       value={userName}
-                       onChangeText={setUserName} 
+                       value={email}
+                       onChangeText={setEmail} 
                        style={[AppStyles.textInput, AppStyles.lightText, AppStyles.lightTextInput]} />
             <TextInput placeholder='Password' 
                        placeholderTextColor='#BEBEBE' 
@@ -28,7 +29,7 @@ export default function LoginScreen() {
                        style={[AppStyles.textInput, AppStyles.lightText, AppStyles.lightTextInput]} />
             <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
                 <Text style={AppStyles.lightText} >Don't have an account ? </Text>
-                <InlineTextButton text="Sign Up" ></InlineTextButton>
+                <InlineTextButton text="Sign Up" onPress={() => navigation.navigate(signUpPageKey)} ></InlineTextButton>
             </View>
             <View style={[AppStyles.rowContainer, AppStyles.bottomMargin]}>
                 <Text style={AppStyles.lightText} >Forgotten your password ? </Text>

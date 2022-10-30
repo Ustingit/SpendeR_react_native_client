@@ -48,5 +48,8 @@ export default StyleSheet.create({
     },
     bottomMargin: {
         marginBottom: 16
+    },
+    errorText: {
+        color: "#ff0000"
     }
 });

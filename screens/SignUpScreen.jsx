@@ -11,13 +11,23 @@ export default function SignUpScreen({ navigation }) {
     const [confirmPassword, setConfirmPassword] = useState(""); 
     const [validationMessage, setValidationMessage] = useState(""); 
 
+    let validateAndSet = (value, valueToCompare, setValue) => {
+        if (value != valueToCompare) {
+            setValidationMessage("Password do not match.");
+        } else {
+            setValidationMessage("");
+        }
+
+        setValue(value);
+    };
+
     return (
         <ImageBackground style={AppStyles.container} source={backgroundImage} >
 <KeyboardAvoidingView style={AppStyles.backgroundCover} 
                       behavior={Platform.OS === "ios"? "padding" : null}
                       keyboardVerticalOffset={60} >
             <Text style={[AppStyles.lightText, AppStyles.header]} >Sign Up</Text>
-            <Text>{validationMessage}</Text>
+            <Text style={AppStyles.errorText} >{validationMessage}</Text>
             <TextInput placeholder='Email' 
                        placeholderTextColor='#BEBEBE'
                        value={email}
@@ -33,7 +43,7 @@ export default function SignUpScreen({ navigation }) {
                        placeholderTextColor='#BEBEBE' 
                        secureTextEntry={true}
                        value={confirmPassword}
-                       onChangeText={setConfirmPassword}
+                       onChangeText={(newValue) => validateAndSet(newValue, password, setConfirmPassword)}
                        style={[AppStyles.textInput, AppStyles.lightText, AppStyles.lightTextInput]} />
             <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
                 <Text style={AppStyles.lightText} >Already have an account ? </Text>

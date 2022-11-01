@@ -1,13 +1,14 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity, ImageBackground, Button, Modal } from 'react-native';
 import SpendGridCell from '../components/spends/SpendGridCell'
 import { groupDataByDate } from '../helpers/data/dataModifiers'
 import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
-import { signOut } from 'firebase/auth';
+import { sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
+import AddSpendModal from '../components/spends/AddSpendModal';
 
 const backgroundImage = require('../images/baffett.jpg');
 
@@ -20,12 +21,14 @@ const HomeScreen = ({ navigation }) => {
     return <ImageBackground source={backgroundImage} style={styles.image} >
       <View>
         <Text style={{marginTop:20, marginLeft: 20}}>Please verify your email to get access for managing spends.</Text>
+        <Button title="Send Verification Email" onPress={() => sendEmailVerification(auth.currentUser)} />
       </View>
     </ImageBackground>
   }
 
   const [isLoading, setIsLoading] = useState(true);
   const [spends, setSpends] = useState();
+  const [showAddMenu, setShowAddMenu] = useState(false);
 
   const fetchSpends = () => {
     setIsLoading(true);
@@ -43,12 +46,6 @@ const HomeScreen = ({ navigation }) => {
   }
 
   useEffect(fetchSpends, []);
-
-  let logout = () => {
-    signOut(auth).then(() => {
-      navigation.popToTop();
-    })
-  }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { item: item })} >
@@ -69,13 +66,22 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const saveNewSpend = ({ comment }) => {
+    console.log('in saving, ', comment);
+  }
+
   if (isLoading) { return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Loader /></View> }
   if (spends.length === 0) {  return <View><Text>There no spends. Feel free to add first..</Text></View>; }
 
   return (
     <ImageBackground source={backgroundImage} style={styles.image} >
     <View>
-      <Text style={{marginTop:20, marginLeft: 20}}>Your spends:</Text>
+      <Text style={{marginTop:80, marginLeft: 20}}>Your spends:</Text>
+      <Button title="Add spend" color="#fb4d3d" style={{marginTop: 40}} onPress={() => setShowAddMenu(true)} />
+      <Modal animationType='slide' transparent={true} visible={showAddMenu} onRequestClose={() => setShowAddMenu(false)}>
+          <AddSpendModal onClose={() => setShowAddMenu(false)}
+                         addSpend={saveNewSpend} />
+      </Modal>
       <FlatList data={spends} 
                 renderItem={renderGroup} 
                 keyExtractor={(group, index) => index} 

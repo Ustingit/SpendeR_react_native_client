@@ -51,5 +51,8 @@ export default StyleSheet.create({
     },
     errorText: {
         color: "#ff0000"
+    },
+    darkTextInput: {
+        borderBottomColor: "#000000"
     }
 });

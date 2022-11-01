@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 import AppStyles from '../styles/AppStyles';
 import InlineTextButton from '../components/common/Buttons/InlineTextButton';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 
 const backgroundImage = require('../images/background-mountain_dark.jpg');
+const auth = getAuth();
 
 export default function SignUpScreen({ navigation }) {
     const [email, setEmail] = useState(""); 
@@ -19,6 +21,20 @@ export default function SignUpScreen({ navigation }) {
         }
 
         setValue(value);
+    };
+
+    let signUp = () => {
+        if (password === confirmPassword) {
+            createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                //Signed in
+                const user = userCredential.user;
+            }).catch((error) => {
+                console.log(`!!! ==> error during signin up: ${error.code} with message: ${error.message}`);
+                setValidationMessage(error.message);
+            });
+            //navigation.navigate("");
+        }
     };
 
     return (
@@ -49,7 +65,7 @@ export default function SignUpScreen({ navigation }) {
                 <Text style={AppStyles.lightText} >Already have an account ? </Text>
                 <InlineTextButton text="Login" onPress={() => navigation.popToTop()} ></InlineTextButton>
             </View>
-            <Button title="Sign Up" color="#f7b267" ></Button>
+            <Button title="Sign Up" onPress={signUp} color="#f7b267" ></Button>
         </KeyboardAvoidingView>
         </ImageBackground>
     );

@@ -8,9 +8,11 @@ import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails'
 
 const backgroundImage = require('../images/baffett.jpg');
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [spends, setSpends] = useState();
+
+  const user = route.params.user;
 
   const fetchSpends = () => {
     setIsLoading(true);

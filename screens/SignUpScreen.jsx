@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, ImageBackground, KeyboardAvoidingView, P
 import AppStyles from '../styles/AppStyles';
 import InlineTextButton from '../components/common/Buttons/InlineTextButton';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { NAVIGATION_KEY as homeScreenKey } from './Home';
 
 const backgroundImage = require('../images/background-mountain_dark.jpg');
 const auth = getAuth();
@@ -27,13 +28,12 @@ export default function SignUpScreen({ navigation }) {
         if (password === confirmPassword) {
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                //Signed in
-                const user = userCredential.user;
+                console.log(`!!! ==> succesfully signed up: ${JSON.stringify(userCredential.user)}`);
+                navigation.navigate(homeScreenKey, { user: userCredential.user });
             }).catch((error) => {
                 console.log(`!!! ==> error during signin up: ${error.code} with message: ${error.message}`);
                 setValidationMessage(error.message);
             });
-            //navigation.navigate("");
         }
     };
 

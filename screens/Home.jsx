@@ -5,14 +5,27 @@ import SpendGridCell from '../components/spends/SpendGridCell'
 import { groupDataByDate } from '../helpers/data/dataModifiers'
 import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
+import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const backgroundImage = require('../images/baffett.jpg');
 
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = ({ navigation }) => {
+  if (!auth.currentUser) {
+    navigation.navigate(loginNavigationKey);
+  }
+
+  if (!auth.currentUser.emailVerified) {
+    return <ImageBackground source={backgroundImage} style={styles.image} >
+      <View>
+        <Text style={{marginTop:20, marginLeft: 20}}>Please verify your email to get access for managing spends.</Text>
+      </View>
+    </ImageBackground>
+  }
+
   const [isLoading, setIsLoading] = useState(true);
   const [spends, setSpends] = useState();
-
-  const user = route.params.user;
 
   const fetchSpends = () => {
     setIsLoading(true);
@@ -30,6 +43,12 @@ const HomeScreen = ({ navigation, route }) => {
   }
 
   useEffect(fetchSpends, []);
+
+  let logout = () => {
+    signOut(auth).then(() => {
+      navigation.popToTop();
+    })
+  }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { item: item })} >

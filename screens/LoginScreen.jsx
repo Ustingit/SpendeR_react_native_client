@@ -4,12 +4,34 @@ import AppStyles from '../styles/AppStyles';
 import InlineTextButton from '../components/common/Buttons/InlineTextButton';
 import { NAVIGATION_KEY as signUpPageKey } from './SignUpScreen';
 import { NAVIGATION_KEY as resetPasswordPageKey } from './ResetPasswordScreen';
-
+import { NAVIGATION_KEY as homeScreenKey } from './Home';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+ 
 const backgroundImage = require('../images/background-mountain_dark.jpg');
 
 export default function LoginScreen({ navigation }) {
+    if (auth.currentUser) {
+        navigation.navigate(homeScreenKey, { user: auth.currentUser });
+    }
+
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState(""); 
+    const [errorMessage, setErrorMessage] = useState(""); 
+
+    let login = () => {
+        if (email !== "" && password !== "") {
+            signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                console.log(`!!! ==> succesfully logged in: ${JSON.stringify(userCredential.user)}`);
+                navigation.navigate(homeScreenKey, { user: userCredential.user });
+            })
+            .catch((error) => {
+                console.log(`!!! ==> error during logging in: ${error.code} with message: ${error.message}`);
+                setErrorMessage(error.message);
+            });
+        }
+    }
 
     return (
         <ImageBackground style={AppStyles.container} source={backgroundImage} >
@@ -17,6 +39,7 @@ export default function LoginScreen({ navigation }) {
                       behavior={Platform.OS === "ios"? "padding" : null}
                       keyboardVerticalOffset={60} >
             <Text style={[AppStyles.lightText, AppStyles.header]} >Login</Text>
+            <Text style={AppStyles.errorText} >{errorMessage}</Text>
             <TextInput placeholder='Email' 
                        placeholderTextColor='#BEBEBE'
                        value={email}
@@ -36,7 +59,7 @@ export default function LoginScreen({ navigation }) {
                 <Text style={AppStyles.lightText} >Forgotten your password ? </Text>
                 <InlineTextButton text="Reset" onPress={() => navigation.navigate(resetPasswordPageKey)} ></InlineTextButton>
             </View>
-            <Button title="Login" color="#f7b267" ></Button>
+            <Button title="Login" onPress={login} color="#f7b267" ></Button>
         </KeyboardAvoidingView>
         </ImageBackground>
     );

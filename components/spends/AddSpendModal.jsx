@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Button, } from 'react-native';
 import React, { useState } from 'react';
 import AppStyles from '../../styles/AppStyles';
+import { auth } from '../../firebase';
 
 export default function AddSpendModal(props) {
     const [comment, setComment] = useState("");
@@ -28,11 +29,11 @@ export default function AddSpendModal(props) {
                     var spendToAdd = {
                         comment: comment,
                         amount: amount,
-                        date: date,
+                        date: new Date().toISOString(),
                         type: 0,
                         subType: 0,
                         direction: 0,
-                        user: 0,
+                        user: auth.currentUser.uid,
                         id: 0,
                         currency: 0
                     };

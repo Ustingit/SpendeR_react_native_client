@@ -7,8 +7,8 @@ import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
 import { sendEmailVerification } from 'firebase/auth';
-import { collection, addDoc } from "firebase/firestore";
-import { auth, db } from '../firebase';
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { auth, db, SPEND_COLLECTION } from '../firebase';
 import AddSpendModal from '../components/spends/AddSpendModal';
 
 const backgroundImage = require('../images/baffett.jpg');
@@ -28,22 +28,33 @@ const HomeScreen = ({ navigation }) => {
   }
 
   const [isLoading, setIsLoading] = useState(true);
-  const [spends, setSpends] = useState();
+  const [spends, setSpends] = useState([]);
   const [showAddMenu, setShowAddMenu] = useState(false);
 
-  const fetchSpends = () => {
+  const fetchSpends = async () => {
     setIsLoading(true);
-    axios.get('https://63552286483f5d2df3adc834.mockapi.io/get/spends')
-    .then(({ data }) => {
-      const groupedData = groupDataByDate(data);
-      //console.log('grouped fetched:', groupedData);
+
+    try {
+      const q = query(collection(db, SPEND_COLLECTION), where("user", "==", auth.currentUser.uid));
+      const qSnapshot = await getDocs(q);
+
+      var items = [];
+      qSnapshot.forEach((doc) => {
+        items.push({
+          ...doc.data(),
+          id: doc.id
+        });
+      });
+
+      const groupedData = groupDataByDate(items);
+      console.log('grouped fetched:', groupedData);
       setSpends(groupedData);
-    }).catch((err) => {
-      console.log('error:', err);
+    } catch (e) {
+      console.log('===> error during fetching spends from db:', e);
       Alert.alert('Error','Error during fetching spends form server.');
-    }).finally(() => {
+    } finally {
       setIsLoading(false);
-    });
+    }
   }
 
   useEffect(fetchSpends, []);
@@ -68,12 +79,10 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const saveNewSpend = async (spendToAdd) => {
-    console.log('in saving, ', spendToAdd);
     try {
-      const docRef = await addDoc(collection(db, "spends"), spendToAdd);
-      console.log('doc was saved with id:', docRef.id);
+      await addDoc(collection(db, SPEND_COLLECTION), spendToAdd);
     } catch (e) {
-      console.log('error duing saving:', e);
+      console.log(`===> error duing saving new spend. Error: ${e} . Spend: ${spendToAdd}`);
     }
   }
 

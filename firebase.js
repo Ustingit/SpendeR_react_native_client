@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+const SPEND_COLLECTION = "spends";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAm6I3DbEZoEUNlrhH6bjuUcnIPkXY9pAA",
   authDomain: "vue-crm-learn-b9979.firebaseapp.com",
@@ -19,5 +21,6 @@ const db = getFirestore();
 
 export {
     auth,
-    db
+    db,
+    SPEND_COLLECTION
 }

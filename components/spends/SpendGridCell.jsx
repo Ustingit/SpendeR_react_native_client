@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { getShortCurrencySignById } from '../../helpers/currencyHelper';
 
 const styles = StyleSheet.create({
   item: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
 const SpendGridCell = ({ spent }) => {
   return (
     <View style={styles.item}>
-      <Text style={styles.title}>{spent.amount} zl.</Text>
+      <Text style={styles.title}>{spent.amount} {getShortCurrencySignById(spent.currency)}</Text>
       <Text style={styles.title}>{spent.comment}</Text>
     </View>
   );

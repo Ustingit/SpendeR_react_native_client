@@ -7,7 +7,8 @@ import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
 import { sendEmailVerification } from 'firebase/auth';
-import { auth } from '../firebase';
+import { collection, addDoc } from "firebase/firestore";
+import { auth, db } from '../firebase';
 import AddSpendModal from '../components/spends/AddSpendModal';
 
 const backgroundImage = require('../images/baffett.jpg');
@@ -66,8 +67,14 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const saveNewSpend = ({ comment }) => {
-    console.log('in saving, ', comment);
+  const saveNewSpend = async (spendToAdd) => {
+    console.log('in saving, ', spendToAdd);
+    try {
+      const docRef = await addDoc(collection(db, "spends"), spendToAdd);
+      console.log('doc was saved with id:', docRef.id);
+    } catch (e) {
+      console.log('error duing saving:', e);
+    }
   }
 
   if (isLoading) { return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Loader /></View> }

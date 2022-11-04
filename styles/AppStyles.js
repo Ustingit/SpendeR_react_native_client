@@ -54,5 +54,8 @@ export default StyleSheet.create({
     },
     darkTextInput: {
         borderBottomColor: "#000000"
+    },
+    stretch: {
+        alignSelf: "stretch"
     }
 });

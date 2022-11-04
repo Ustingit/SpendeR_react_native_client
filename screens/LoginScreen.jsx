@@ -5,7 +5,7 @@ import InlineTextButton from '../components/common/Buttons/InlineTextButton';
 import { NAVIGATION_KEY as signUpPageKey } from './SignUpScreen';
 import { NAVIGATION_KEY as resetPasswordPageKey } from './ResetPasswordScreen';
 import { NAVIGATION_KEY as homeScreenKey } from './Home';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
  
 const backgroundImage = require('../images/background-mountain_dark.jpg');
@@ -13,6 +13,12 @@ const backgroundImage = require('../images/background-mountain_dark.jpg');
 export default function LoginScreen({ navigation }) {
     if (auth.currentUser) {
         navigation.navigate(homeScreenKey, { user: auth.currentUser });
+    } else {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigation.navigate(homeScreenKey, { user: auth.currentUser });
+            }
+        });
     }
 
     const [email, setEmail] = useState(""); 

@@ -7,7 +7,7 @@ import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
 import { sendEmailVerification } from 'firebase/auth';
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { auth, db, SPEND_COLLECTION } from '../firebase';
 import AddSpendModal from '../components/spends/AddSpendModal';
 
@@ -59,8 +59,24 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(fetchSpends, []);
 
+  const deleteSpend = async (spendId) => {
+    console.log(`===> deleting item with id: ${spendId}`);
+    await deleteDoc(doc(db, SPEND_COLLECTION, spendId));
+
+    var spendsToUpdate = [...spends];
+    console.log('oldSpends are: ', spendsToUpdate);
+    spendsToUpdate.forEach((sp) => {
+      sp.items = sp.items.filter(x => x.id !== spendId);
+    }); 
+    var additionalFilter = spendsToUpdate.filter(sp => sp.items.length > 0);
+    console.log('newSpends are: ', additionalFilter);
+    setSpends(additionalFilter);
+
+    navigation.navigate(NAVIGATION_KEY);
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { item: item })} >
+    <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { "item": item, "onDelete": deleteSpend })} >
         <SpendGridCell spent={item} />
     </TouchableOpacity>
   );
@@ -80,7 +96,11 @@ const HomeScreen = ({ navigation }) => {
 
   const saveNewSpend = async (spendToAdd) => {
     try {
-      await addDoc(collection(db, SPEND_COLLECTION), spendToAdd);
+      var docRef = await addDoc(collection(db, SPEND_COLLECTION), spendToAdd);
+      spendToAdd.id = docRef.id;
+
+      var updatedSpends = [...spends].push(spendToAdd);
+      setSpends(updatedSpends);
     } catch (e) {
       console.log(`===> error duing saving new spend. Error: ${e} . Spend: ${spendToAdd}`);
     }

@@ -31,6 +31,7 @@ export default function AddSpendModal(props) {
                             unfillColor='#FFFFFF'
                             text='Is it common spend ?'
                             iconStyle={{ borderColor: "258ea6" }}
+                            textStyle={{ textDecorationLine: "none" }}
                             onPress={(isChecked) => setIsCommon(isChecked)} />
             <View style={[AppStyles.rowContainer, AppStyles.rightAligned, AppStyles.rightMargin]} >
                 <Button title='Cancel' onPress={props.onClose} />

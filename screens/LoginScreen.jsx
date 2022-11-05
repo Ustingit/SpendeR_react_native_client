@@ -12,11 +12,11 @@ const backgroundImage = require('../images/background-mountain_dark.jpg');
 
 export default function LoginScreen({ navigation }) {
     if (auth.currentUser) {
-        navigation.navigate(homeScreenKey, { user: auth.currentUser });
+        navigation.navigate(homeScreenKey);
     } else {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                navigation.navigate(homeScreenKey, { user: auth.currentUser });
+                navigation.navigate(homeScreenKey);
             }
         });
     }

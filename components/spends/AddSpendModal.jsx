@@ -36,7 +36,11 @@ export default function AddSpendModal(props) {
             <View style={[AppStyles.rowContainer, AppStyles.rightAligned, AppStyles.rightMargin]} >
                 <Button title='Cancel' onPress={props.onClose} />
                 <Button title='Ok' onPress={() => {
-                    var spendToAdd = {
+                    setComment("");      
+                    setAmount("");      
+                    setDate("");     
+
+                    props.addSpend({
                         comment: comment,
                         amount: amount,
                         date: new Date().toISOString(),
@@ -47,12 +51,8 @@ export default function AddSpendModal(props) {
                         id: 0,
                         currency: 0,
                         isCommon: isCommon
-                    };
+                    });
 
-                    props.addSpend(spendToAdd);
-                    setComment("");      
-                    setAmount("");      
-                    setDate("");      
                     props.onClose();
                 }} />
             </View>

@@ -1,8 +1,7 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity, ImageBackground, Button, Modal } from 'react-native';
 import SpendGridCell from '../components/spends/SpendGridCell'
-import { groupDataByDate } from '../helpers/data/dataModifiers'
+import { groupDataByDate, addItemToGroupedArray, deleteItemByIdFromGroupedArray } from '../helpers/data/dataModifiers'
 import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
@@ -57,22 +56,47 @@ const HomeScreen = ({ navigation }) => {
     }
   }
 
-  useEffect(fetchSpends, []);
+  useEffect(() => {
+    async function fetchSpendsInternal() {
+      setIsLoading(true);
+  
+      try {
+        const q = query(collection(db, SPEND_COLLECTION), where("user", "==", auth.currentUser.uid));
+        const qSnapshot = await getDocs(q);
+  
+        var items = [];
+        qSnapshot.forEach((doc) => {
+          items.push({
+            ...doc.data(),
+            id: doc.id
+          });
+        });
+  
+        const groupedData = groupDataByDate(items);
+        console.log('grouped fetched:', groupedData);
+        setSpends(groupedData);
+      } catch (e) {
+        console.log('===> error during fetching spends from db:', e);
+        Alert.alert('Error','Error during fetching spends form server.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchSpendsInternal();
+  }, []);
 
   const deleteSpend = async (spendId) => {
-    console.log(`===> deleting item with id: ${spendId}`);
-    await deleteDoc(doc(db, SPEND_COLLECTION, spendId));
+    try {
+      await deleteDoc(doc(db, SPEND_COLLECTION, spendId));
 
-    var spendsToUpdate = [...spends];
-    console.log('oldSpends are: ', spendsToUpdate);
-    spendsToUpdate.forEach((sp) => {
-      sp.items = sp.items.filter(x => x.id !== spendId);
-    }); 
-    var additionalFilter = spendsToUpdate.filter(sp => sp.items.length > 0);
-    console.log('newSpends are: ', additionalFilter);
-    setSpends(additionalFilter);
-
-    navigation.navigate(NAVIGATION_KEY);
+      var updatedSpends = deleteItemByIdFromGroupedArray(spends, spendId);
+      setSpends(updatedSpends);
+    } catch (e) {
+      console.log(`===> error of deleting item with id: ${spendId}, error: ${e}`);
+    } finally {
+      navigation.navigate(NAVIGATION_KEY);
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -99,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
       var docRef = await addDoc(collection(db, SPEND_COLLECTION), spendToAdd);
       spendToAdd.id = docRef.id;
 
-      var updatedSpends = [...spends].push(spendToAdd);
+      var updatedSpends = addItemToGroupedArray(spends, spendToAdd); 
       setSpends(updatedSpends);
     } catch (e) {
       console.log(`===> error duing saving new spend. Error: ${e} . Spend: ${spendToAdd}`);
@@ -115,8 +139,7 @@ const HomeScreen = ({ navigation }) => {
       <Text style={{marginTop:80, marginLeft: 20}}>Your spends:</Text>
       <Button title="Add spend" color="#fb4d3d" style={{marginTop: 40}} onPress={() => setShowAddMenu(true)} />
       <Modal animationType='slide' transparent={true} visible={showAddMenu} onRequestClose={() => setShowAddMenu(false)}>
-          <AddSpendModal onClose={() => setShowAddMenu(false)}
-                         addSpend={saveNewSpend} />
+        <AddSpendModal onClose={() => setShowAddMenu(false)} addSpend={saveNewSpend} />
       </Modal>
       <FlatList data={spends} 
                 renderItem={renderGroup} 

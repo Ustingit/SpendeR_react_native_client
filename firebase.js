@@ -4,8 +4,10 @@ import { getFirestore } from "firebase/firestore";
 
 const SPEND_COLLECTION = "spends";
 
+var dbKey = process.env.SPENDER_DB_KEY || 'UNKNOWN_DB_KEY';
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAm6I3DbEZoEUNlrhH6bjuUcnIPkXY9pAA",
+  apiKey: dbKey,
   authDomain: "vue-crm-learn-b9979.firebaseapp.com",
   databaseURL: "https://vue-crm-learn-b9979-default-rtdb.firebaseio.com",
   projectId: "vue-crm-learn-b9979",

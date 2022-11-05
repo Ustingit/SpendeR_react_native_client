@@ -6,6 +6,7 @@ import SpendDetailsScreen, { NAVIGATION_KEY as detailsKey } from '../../screens/
 import LoginScreen, { NAVIGATION_KEY as loginKey } from '../LoginScreen';
 import SignUpScreen, { NAVIGATION_KEY as signUpKey } from '../SignUpScreen';
 import ResetPasswordScreen, { NAVIGATION_KEY as resetPasswordKey } from '../ResetPasswordScreen';
+import ManageAccount, { NAVIGATION_KEY as manageAccountKey } from '../Account/ManageAccount';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 
@@ -43,6 +44,7 @@ export const Navigation = () => {
                         headerRight: () => showLogoutButton()
                       }} />
         <Stack.Screen name={detailsKey} component={SpendDetailsScreen} />
+        <Stack.Screen name={manageAccountKey} component={ManageAccount} options={{ headerShown: false }} />
     </Stack.Navigator>
     </NavigationContainer>;
 }

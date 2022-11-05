@@ -30,7 +30,10 @@ export default function LoginScreen({ navigation }) {
             signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log(`!!! ==> succesfully logged in: ${JSON.stringify(userCredential.user)}`);
-                navigation.navigate(homeScreenKey, { user: userCredential.user });
+                navigation.navigate(homeScreenKey);
+                setEmail("");
+                setPassword("");
+                setErrorMessage("");
             })
             .catch((error) => {
                 console.log(`!!! ==> error during logging in: ${error.code} with message: ${error.message}`);

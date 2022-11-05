@@ -6,7 +6,7 @@ import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
 import { sendEmailVerification } from 'firebase/auth';
-import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { auth, db, SPEND_COLLECTION } from '../firebase';
 import AddSpendModal from '../components/spends/AddSpendModal';
 
@@ -129,6 +129,11 @@ const HomeScreen = ({ navigation }) => {
       console.log(`===> error duing saving new spend. Error: ${e} . Spend: ${spendToAdd}`);
     }
   }
+
+  const updateSpend = async (updatedSpend) => {
+    const ref = doc(db, SPEND_COLLECTION, updatedSpend.id);
+    setDoc(ref, updatedSpend, { merge: true }); // was: setDoc(ref, { completed: isChecked }, { merge: true });
+  };
 
   if (isLoading) { return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Loader /></View> }
   if (spends.length === 0) {  return <View><Text>There no spends. Feel free to add first..</Text></View>; }

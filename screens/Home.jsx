@@ -101,7 +101,7 @@ const HomeScreen = ({ navigation }) => {
   const updateSpend = async (updatedSpend) => {
     try {
       const ref = doc(db, SPEND_COLLECTION, updatedSpend.id);
-      setDoc(ref, updatedSpend, { merge: true }); // was: setDoc(ref, { completed: isChecked }, { merge: true });
+      setDoc(ref, updatedSpend, { merge: true });
 
       var updatedSpends = updateItemInGroupedArray(spends, updatedSpend);
       setSpends(updatedSpends);

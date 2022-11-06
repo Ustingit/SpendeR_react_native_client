@@ -1,19 +1,33 @@
-import { View, Text, TextInput, Button, } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity, } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import React, { useState } from 'react';
 import AppStyles from '../../styles/AppStyles';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function UpdateSpendModal(props) {
     if (!props.spend) { return (<></>) }
 
     const [comment, setComment] = useState(props.spend.comment || "");
     const [amount, setAmount] = useState(props.spend.amount || "");
-    const [date, setDate] = useState(props.spend.date || "");
     const [isCommon, setIsCommon] = useState(props.spend.isCommon || false);
+    const [date, setDate] = useState(props.spend.date ? new Date(props.spend.date) : new Date());
+    const [showDatepicker, setShowDatepicker] = useState(false);
+
+    const onDatePickerChange = (event, selectedDate) => {
+        setShowDatepicker(false);
+        setDate(selectedDate);
+    };
 
     return (
         <View style={AppStyles.container} >
             <Text style={AppStyles.header} >Update spend</Text>
+            <TouchableOpacity onPress={() => setShowDatepicker(true)} >
+                <Text style={{ marginTop: 15 }} >Date: {date.toDateString()}</Text>
+            </TouchableOpacity>
+            {showDatepicker && <DateTimePicker testID="dateTimePicker"
+                            value={date}
+                            mode={'date'}
+                            onChange={onDatePickerChange} />}
             <TextInput style={[AppStyles.textInput, AppStyles.darkTextInput]}
                        placeholder="Comment"
                        value={comment}
@@ -22,10 +36,6 @@ export default function UpdateSpendModal(props) {
                        placeholder="Amount"
                        value={amount}
                        onChangeText={setAmount} />
-            <TextInput style={[AppStyles.textInput, AppStyles.darkTextInput]}
-                       placeholder="Date"
-                       value={date}
-                       onChangeText={setDate} />
             <BouncyCheckbox isChecked={isCommon}
                             size={25}
                             fillColor="#258ea6"
@@ -41,7 +51,7 @@ export default function UpdateSpendModal(props) {
                         id: props.spend.id,
                         comment: comment,
                         amount: amount,
-                        date: new Date().toISOString(),
+                        date: date.toISOString(),
                         isCommon: isCommon
                     });
 

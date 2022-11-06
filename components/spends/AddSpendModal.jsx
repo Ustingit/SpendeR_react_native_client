@@ -1,18 +1,28 @@
-import { View, Text, TextInput, Button, } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import React, { useState } from 'react';
 import AppStyles from '../../styles/AppStyles';
 import { auth } from '../../firebase';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AddSpendModal(props) {
     const [comment, setComment] = useState("");
     const [amount, setAmount] = useState("");
-    const [date, setDate] = useState("");
     const [isCommon, setIsCommon] = useState(false);
+    const [date, setDate] = useState(new Date());
+    const [showDatepicker, setShowDatepicker] = useState(false);
 
+    const onDatePickerChange = (event, selectedDate) => {
+        setShowDatepicker(false);
+        setDate(selectedDate);
+    };
+    
     return (
         <View style={AppStyles.container} >
             <Text style={AppStyles.header} >Add spend</Text>
+            <TouchableOpacity onPress={() => setShowDatepicker(true)} >
+                <Text style={{ marginTop: 15 }} >Date: {date.toDateString()}</Text>
+            </TouchableOpacity>
             <TextInput style={[AppStyles.textInput, AppStyles.darkTextInput]}
                        placeholder="Comment"
                        value={comment}
@@ -21,10 +31,10 @@ export default function AddSpendModal(props) {
                        placeholder="Amount"
                        value={amount}
                        onChangeText={setAmount} />
-            <TextInput style={[AppStyles.textInput, AppStyles.darkTextInput]}
-                       placeholder="Date"
-                       value={date}
-                       onChangeText={setDate} />
+            {showDatepicker && <DateTimePicker testID="dateTimePicker"
+                            value={date}
+                            mode={'date'}
+                            onChange={onDatePickerChange} />}
             <BouncyCheckbox isChecked={isCommon}
                             size={25}
                             fillColor="#258ea6"
@@ -38,12 +48,11 @@ export default function AddSpendModal(props) {
                 <Button title='Ok' onPress={() => {
                     setComment("");      
                     setAmount("");      
-                    setDate("");     
 
                     props.addSpend({
                         comment: comment,
                         amount: amount,
-                        date: new Date().toISOString(),
+                        date: date.toISOString(),
                         type: 0,
                         subType: 0,
                         direction: 0,

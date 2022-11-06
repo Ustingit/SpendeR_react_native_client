@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Text, Alert, RefreshControl, TouchableOpacity, ImageBackground, Button, Modal } from 'react-native';
 import SpendGridCell from '../components/spends/SpendGridCell'
-import { groupDataByDate, addItemToGroupedArray, deleteItemByIdFromGroupedArray } from '../helpers/data/dataModifiers'
+import { groupDataByDate, addItemToGroupedArray, deleteItemByIdFromGroupedArray, updateItemInGroupedArray } from '../helpers/data/dataModifiers'
 import Loader from '../components/common/Loader'
 import { NAVIGATION_KEY as detailsNavigationKey } from '../screens/SpendDetails';
 import { NAVIGATION_KEY as loginNavigationKey } from './LoginScreen';
@@ -46,7 +46,6 @@ const HomeScreen = ({ navigation }) => {
       });
 
       const groupedData = groupDataByDate(items);
-      console.log('grouped fetched:', groupedData);
       setSpends(groupedData);
     } catch (e) {
       console.log('===> error during fetching spends from db:', e);
@@ -99,8 +98,22 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const updateSpend = async (updatedSpend) => {
+    try {
+      const ref = doc(db, SPEND_COLLECTION, updatedSpend.id);
+      setDoc(ref, updatedSpend, { merge: true }); // was: setDoc(ref, { completed: isChecked }, { merge: true });
+
+      var updatedSpends = updateItemInGroupedArray(spends, updatedSpend);
+      setSpends(updatedSpends);
+    } catch (e) {
+      console.log(`===> error duing updating spend. Error: ${e} . Spend: ${updatedSpend}`);
+    } finally {
+      navigation.navigate(NAVIGATION_KEY);
+    }
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { "item": item, "onDelete": deleteSpend })} >
+    <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { "item": item, "onDelete": deleteSpend, "onSpendUpdate": updateSpend })} >
         <SpendGridCell spent={item} />
     </TouchableOpacity>
   );
@@ -129,11 +142,6 @@ const HomeScreen = ({ navigation }) => {
       console.log(`===> error duing saving new spend. Error: ${e} . Spend: ${spendToAdd}`);
     }
   }
-
-  const updateSpend = async (updatedSpend) => {
-    const ref = doc(db, SPEND_COLLECTION, updatedSpend.id);
-    setDoc(ref, updatedSpend, { merge: true }); // was: setDoc(ref, { completed: isChecked }, { merge: true });
-  };
 
   if (isLoading) { return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} ><Loader /></View> }
   if (spends.length === 0) {  return <View><Text>There no spends. Feel free to add first..</Text></View>; }

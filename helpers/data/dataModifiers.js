@@ -35,3 +35,21 @@ export const deleteItemByIdFromGroupedArray = (groupedArray, id) => {
 
     return result.filter(sp => sp.items.length > 0);
 }
+
+export const updateItemInGroupedArray = (groupedArray, updatedItem) => {
+    if (!updatedItem) { return groupedArray; }
+
+    var result = [...groupedArray];
+    result.forEach((group) => {
+        group.items.forEach((x) => {
+            if (x.id === updatedItem.id) {
+                x.comment = updatedItem.comment;
+                x.amount = updatedItem.amount;
+                x.date = updatedItem.date;
+                x.isCommon = updatedItem.isCommon;
+            }
+        });
+    })
+    
+    return result;
+}

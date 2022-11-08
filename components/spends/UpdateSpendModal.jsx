@@ -3,6 +3,9 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import React, { useState } from 'react';
 import AppStyles from '../../styles/AppStyles';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import SelectList from 'react-native-dropdown-select-list'
+import { DIRECTIONS } from '../../helpers/directionHelper';
+import { AntDesign } from '@expo/vector-icons'; 
 
 export default function UpdateSpendModal(props) {
     if (!props.spend) { return (<></>) }
@@ -12,6 +15,7 @@ export default function UpdateSpendModal(props) {
     const [isCommon, setIsCommon] = useState(props.spend.isCommon || false);
     const [date, setDate] = useState(props.spend.date ? new Date(props.spend.date) : new Date());
     const [showDatepicker, setShowDatepicker] = useState(false);
+    const [selectedDirection, setSelectedDirection] = React.useState(props.spend.direction);
 
     const onDatePickerChange = (event, selectedDate) => {
         setShowDatepicker(false);
@@ -36,6 +40,12 @@ export default function UpdateSpendModal(props) {
                        placeholder="Amount"
                        value={amount}
                        onChangeText={setAmount} />
+            <SelectList setSelected={setSelectedDirection} 
+                        data={DIRECTIONS}  
+                        arrowicon={<AntDesign name="downcircleo" size={12} color="black" />} 
+                        search={false} 
+                        defaultOption={props.spend.direction}
+                        boxStyles={{borderRadius:0}} />
             <BouncyCheckbox isChecked={isCommon}
                             size={25}
                             fillColor="#258ea6"
@@ -52,7 +62,8 @@ export default function UpdateSpendModal(props) {
                         comment: comment,
                         amount: amount,
                         date: date.toISOString(),
-                        isCommon: isCommon
+                        isCommon: isCommon,
+                        direction: selectedDirection
                     });
 
                     props.onClose();

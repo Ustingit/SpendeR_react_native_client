@@ -39,7 +39,7 @@ export default function AddSpendModal(props) {
                             value={date}
                             mode={'date'}
                             onChange={onDatePickerChange} />}
-            <SelectList setSelected={setSelectedDirection} onSelect={() => alert(selectedDirection)}
+            <SelectList setSelected={setSelectedDirection} 
                         data={DIRECTIONS}  
                         arrowicon={<AntDesign name="downcircleo" size={12} color="black" />} 
                         search={false} 

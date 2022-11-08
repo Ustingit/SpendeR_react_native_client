@@ -47,6 +47,7 @@ export const updateItemInGroupedArray = (groupedArray, updatedItem) => {
                 x.amount = updatedItem.amount;
                 x.date = updatedItem.date;
                 x.isCommon = updatedItem.isCommon;
+                x.direction = updatedItem.direction;
             }
         });
     })

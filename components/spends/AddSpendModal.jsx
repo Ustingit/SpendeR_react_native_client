@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import AppStyles from '../../styles/AppStyles';
 import { auth } from '../../firebase';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import SelectList from 'react-native-dropdown-select-list'
+import { DIRECTIONS } from '../../helpers/directionHelper';
+import { AntDesign } from '@expo/vector-icons'; 
 
 export default function AddSpendModal(props) {
     const [comment, setComment] = useState("");
@@ -11,6 +14,7 @@ export default function AddSpendModal(props) {
     const [isCommon, setIsCommon] = useState(false);
     const [date, setDate] = useState(new Date());
     const [showDatepicker, setShowDatepicker] = useState(false);
+    const [selectedDirection, setSelectedDirection] = React.useState(DIRECTIONS[0]);
 
     const onDatePickerChange = (event, selectedDate) => {
         setShowDatepicker(false);
@@ -35,6 +39,12 @@ export default function AddSpendModal(props) {
                             value={date}
                             mode={'date'}
                             onChange={onDatePickerChange} />}
+            <SelectList setSelected={setSelectedDirection} onSelect={() => alert(selectedDirection)}
+                        data={DIRECTIONS}  
+                        arrowicon={<AntDesign name="downcircleo" size={12} color="black" />} 
+                        search={false} 
+                        boxStyles={{borderRadius:0}} //override default styles
+                        defaultOption={DIRECTIONS[0]}  />
             <BouncyCheckbox isChecked={isCommon}
                             size={25}
                             fillColor="#258ea6"
@@ -55,7 +65,7 @@ export default function AddSpendModal(props) {
                         date: date.toISOString(),
                         type: 0,
                         subType: 0,
-                        direction: 0,
+                        direction: selectedDirection || DIRECTIONS[0].key,
                         user: auth.currentUser.uid,
                         id: 0,
                         currency: 0,

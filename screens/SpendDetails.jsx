@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Image, Text, View, Button, Modal } from 'react-native';
 import { getShortCurrencySignById } from '../helpers/currencyHelper';
 import UpdateSpendModal from '../components/spends/UpdateSpendModal';
+import { getDirectionNameById } from '../helpers/directionHelper';
 
 export default SpendDetailsScreen = ({ route, navigation }) => {
     const { item, onDelete, onSpendUpdate } = route.params;
@@ -22,6 +23,7 @@ export default SpendDetailsScreen = ({ route, navigation }) => {
             <Text>{item.id}</Text>
             <Text>{item.amount} {getShortCurrencySignById(item.currency)}</Text>
             <Text>{new Date(item.date).toLocaleDateString()}</Text>
+            <Text>Direction: {getDirectionNameById(item.direction)}</Text>
             <Text>{item.comment}</Text>
             <Text>{item.typeName} / {item.subTypeName}</Text>
             <View>

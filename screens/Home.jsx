@@ -121,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
   const renderGroup = ({ item }) => {
     return (
       <View key={item.name} >
-                        <Text style={{marginLeft: 20}}>{new Date(item.name).toDateString()}</Text>
+                        <Text style={{marginLeft: 20, color: "red"}}>{new Date(item.name).toDateString()}</Text>
                         <FlatList
                             data={item.items}
                             renderItem={renderItem}

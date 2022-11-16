@@ -5,6 +5,7 @@ import InlineTextButton from '../components/common/Buttons/InlineTextButton';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 import { NAVIGATION_KEY as homeScreenKey } from './Home';
+import { NAVIGATION_KEY_AUTHORIZED_PAGES as authorizedPagesKey } from './Navigation/Navigation';
 
 const backgroundImage = require('../images/background-mountain_dark.jpg');
 
@@ -30,7 +31,7 @@ export default function SignUpScreen({ navigation }) {
             .then((userCredential) => {
                 console.log(`!!! ==> succesfully signed up: ${JSON.stringify(userCredential.user)}`);
                 sendEmailVerification(auth.currentUser)
-                navigation.navigate(homeScreenKey, { user: auth.currentUser });
+                navigation.navigate(authorizedPagesKey, { screen: homeScreenKey, params: { user: auth.currentUser } });
             }).catch((error) => {
                 console.log(`!!! ==> error during signin up: ${error.code} with message: ${error.message}`);
                 setValidationMessage(error.message);

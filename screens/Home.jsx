@@ -9,6 +9,7 @@ import { sendEmailVerification } from 'firebase/auth';
 import { collection, addDoc, query, where, getDocs, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { auth, db, SPEND_COLLECTION } from '../firebase';
 import AddSpendModal from '../components/spends/AddSpendModal';
+import { NAVIGATION_KEY_AUTHORIZED_PAGES as authorizedPagesKey } from './Navigation/Navigation';
 
 const backgroundImage = require('../images/baffett.jpg');
 
@@ -94,7 +95,7 @@ const HomeScreen = ({ navigation }) => {
     } catch (e) {
       console.log(`===> error of deleting item with id: ${spendId}, error: ${e}`);
     } finally {
-      navigation.navigate(NAVIGATION_KEY);
+      navigation.navigate(authorizedPagesKey, { screen: NAVIGATION_KEY });
     }
   };
 
@@ -108,12 +109,12 @@ const HomeScreen = ({ navigation }) => {
     } catch (e) {
       console.log(`===> error duing updating spend. Error: ${e} . Spend: ${updatedSpend}`);
     } finally {
-      navigation.navigate(NAVIGATION_KEY);
+      navigation.navigate(authorizedPagesKey, { screen: NAVIGATION_KEY });
     }
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate(detailsNavigationKey, { "item": item, "onDelete": deleteSpend, "onSpendUpdate": updateSpend })} >
+    <TouchableOpacity onPress={() => navigation.navigate(authorizedPagesKey, { screen: detailsNavigationKey, params: { "item": item, "onDelete": deleteSpend, "onSpendUpdate": updateSpend } })} >
         <SpendGridCell spent={item} />
     </TouchableOpacity>
   );

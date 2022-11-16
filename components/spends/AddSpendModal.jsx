@@ -67,7 +67,6 @@ export default function AddSpendModal(props) {
                         subType: 0,
                         direction: selectedDirection || DIRECTIONS[0].key,
                         user: auth.currentUser.uid,
-                        id: 0,
                         currency: 0,
                         isCommon: isCommon
                     });

@@ -7,16 +7,17 @@ import { NAVIGATION_KEY as resetPasswordPageKey } from './ResetPasswordScreen';
 import { NAVIGATION_KEY as homeScreenKey } from './Home';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
+import { NAVIGATION_KEY_AUTHORIZED_PAGES as authorizedPagesKey } from './Navigation/Navigation';
  
 const backgroundImage = require('../images/background-mountain_dark.jpg');
 
 export default function LoginScreen({ navigation }) {
     if (auth.currentUser) {
-        navigation.navigate(homeScreenKey);
+        navigation.navigate(authorizedPagesKey, { screen: homeScreenKey });
     } else {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                navigation.navigate(homeScreenKey);
+                navigation.navigate(authorizedPagesKey, { screen: homeScreenKey });
             }
         });
     }
@@ -30,7 +31,7 @@ export default function LoginScreen({ navigation }) {
             signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log(`!!! ==> succesfully logged in: ${JSON.stringify(userCredential.user)}`);
-                navigation.navigate(homeScreenKey);
+                navigation.navigate(authorizedPagesKey, { screen: homeScreenKey });
                 setEmail("");
                 setPassword("");
                 setErrorMessage("");
